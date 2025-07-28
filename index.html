@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ficha Completa com Esperança e Medo</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #121212, #1b1b1b, #111);
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      color: #2ecc71;
+      text-shadow: 0 0 8px #2ecc71bb;
+      margin-top: 30px;
+    }
+
+    .section {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .section h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #2ecc71;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #2c2c2c;
+      color: white;
+      margin-bottom: 15px;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    .atributos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #2c2c2c;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+    }
+
+    .checkbox-group label:hover {
+      background: #3a3a3a;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    #rollBtn {
+      display: block;
+      margin: 30px auto;
+      padding: 14px 32px;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      background: #2ecc71;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(46,204,113,0.5);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #rollBtn:hover {
+      background: #27ae60;
+      box-shadow: 0 8px 25px rgba(39,174,96,0.75);
+    }
+
+    #resultado-narrativo, #soma-total {
+      text-align: center;
+      font-size: 22px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .dice-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .hex-dice {
+      width: 120px;
+      height: 105px;
+      background: linear-gradient(145deg, #5dade2, #2980b9);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 10px rgba(41,128,185,0.8);
+      user-select: none;
+      transition: background 0.3s;
+    }
+
+    .hex-dice.purple {
+      background: linear-gradient(145deg, #a569bd, #8e44ad);
+    }
+
+    .hex-dice.gold {
+      background: linear-gradient(145deg, #f7dc6f, #d4ac0d);
+      color: #3e2e00;
+    }
+
+    #historySidebar {
+      background: #222;
+      color: white;
+      padding: 15px;
+      border-top: 2px solid #2ecc71;
+      max-height: 250px;
+      overflow-y: auto;
+      font-size: 14px;
+      margin-top: 20px;
+      border-radius: 0 0 10px 10px;
+    }
+
+    #historySidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #historySidebar li {
+      padding: 5px 0;
+      border-bottom: 1px solid #444;
+    }
+
+    @keyframes rotateJump {
+      0% { transform: translateY(0) scale(1) rotate(0deg); }
+      40% { transform: translateY(-25px) scale(1.15) rotate(180deg); }
+      100% { transform: translateY(0) scale(1) rotate(360deg); }
+    }
+
+    .rolling {
+      animation: rotateJump 0.6s ease;
+    }
+
+    /* Ícone flutuante para anotações */
+    #notesIcon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #2ecc71;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(46,204,113,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      z-index: 9999;
+    }
+
+    #notesIcon:hover {
+      background: #27ae60;
+      transform: scale(1.1);
+    }
+
+    #notesIcon svg {
+      fill: white;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+    }
+
+    /* Modal das Anotações */
+    #notesModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #1e1e1e;
+      width: 90vw;
+      max-width: 700px;
+      height: 450px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      z-index: 10000;
+      transition: transform 0.3s ease;
+    }
+
+    #notesModal.open {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #notesModal header {
+      padding: 15px 20px;
+      background: #2ecc71;
+      border-radius: 15px 15px 0 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #111;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #notesModal header button.closeBtn {
+      background: transparent;
+      border: none;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #111;
+      line-height: 1;
+      padding: 0 5px;
+      transition: color 0.2s;
+    }
+
+    #notesModal header button.closeBtn:hover {
+      color: #0b6623;
+    }
+
+    .tabs {
+      display: flex;
+      background: #222;
+      border-bottom: 2px solid #2ecc71;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      color: #bbb;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tabs button:hover {
+      color: #2ecc71;
+      background: #1a1a1a;
+    }
+
+    .tabs button.active {
+      color: #2ecc71;
+      border-bottom: 3px solid #2ecc71;
+      background: #151515;
+      font-weight: 700;
+    }
+
+    .tab-content {
+      flex: 1;
+      padding: 15px 20px;
+    }
+
+    .tab-content textarea {
+      width: 100%;
+      height: 100%;
+      background: #2c2c2c;
+      border-radius: 10px;
+      border: none;
+      padding: 12px;
+      color: white;
+      font-size: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      resize: none;
+      box-sizing: border-box;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+      transition: background 0.3s;
+    }
+
+    .tab-content textarea:focus {
+      background: #3a3a3a;
+      outline: none;
+      box-shadow: 0 0 8px #2ecc71;
+    }
+
+    #modalOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.65);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9998;
+    }
+
+    #modalOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #historySidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #historySidebar::-webkit-scrollbar-track {
+      background: #1e1e1e;
+    }
+
+    #historySidebar::-webkit-scrollbar-thumb {
+      background: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ficha de Personagem Daggerheart</h1>
+
+    <div class="section">
+      <h2>Informações Gerais</h2>
+      <label>Nome</label><input type="text" placeholder="Nome do personagem">
+      <label>Pronomes</label><input type="text" placeholder="Pronomes">
+      <label>Nível</label><input type="number" min="1" placeholder="Nível">
+    </div>
+
+    <div class="section">
+      <h2>Atributos</h2>
+      <div class="atributos-grid">
+        <input type="number" value="2">
+        <input type="number" value="0">
+        <input type="number" value="0">
+        <input type="number" value="0">
+        <input type="number" value="0">
+        <input type="number" value="0">
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>HP, Estresse, Inventário</h2>
+      <label>Pontos de Vida (HP)</label><input type="number" placeholder="HP">
+      <label>Estresse</label><input type="number" placeholder="Estresse">
+      <label>Inventário</label><textarea rows="3" placeholder="Itens, armas, equipamentos..."></textarea>
+    </div>
+
+    <div class="section">
+      <h2>Experiências & Recursos de Classe</h2>
+      <label>Experiências</label><textarea rows="2" placeholder="Experiências adquiridas..."></textarea>
+      <label>Recursos de Classe</label><textarea rows="2" placeholder="Recursos especiais..."></textarea>
+    </div>
+
+    <div class="section">
+      <h2>Fortuna</h2>
+      <div class="checkbox-group">
+        <label><input type="checkbox"> PUNHADO</label>
+        <label><input type="checkbox"> BOLSAS</label>
+        <label><input type="checkbox"> BAÚS</label>
+        <label><input type="checkbox"> TESOURO</label>
+        <label><input type="checkbox"> FORTUNA</label>
+      </div>
+    </div>
+
+    <button id="rollBtn" onclick="rollDice()">🎲 Rolar Esperança e Medo 🎲</button>
+
+    <div id="resultado-narrativo">Clique para rolar os dados</div>
+
+    <div class="dice-container">
+      <div id="esperanca" class="hex-dice">?</div>
+      <div id="medo" class="hex-dice purple">?</div>
+    </div>
+
+    <div id="soma-total">Soma: ?</div>
+
+    <div id="historySidebar">
+      <h2>Histórico de Rolagens</h2>
+      <ul id="historyList"></ul>
+    </div>
+  </div>
+
+  <!-- Ícone flutuante de anotações -->
+  <div id="notesIcon" title="Abrir Anotações">
+    <svg viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6zM5 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9H9l-4 4V4z"/></svg>
+  </div>
+
+  <!-- Modal de anotações -->
+  <div id="modalOverlay"></div>
+  <div id="notesModal" role="dialog" aria-modal="true" aria-labelledby="notesModalTitle">
+    <header>
+      <div id="notesModalTitle">Anotações do Jogador</div>
+      <button class="closeBtn" aria-label="Fechar Anotações">&times;</button>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Abas de Anotações">
+      <button role="tab" id="tab1" aria-controls="tabContent1" aria-selected="true" class="active">Ideias</button>
+      <button role="tab" id="tab2" aria-controls="tabContent2" aria-selected="false">Diário</button>
+      <button role="tab" id="tab3" aria-controls="tabContent3" aria-selected="false">Outros</button>
+    </nav>
+
+    <section id="tabContent1" class="tab-content" role="tabpanel" aria-labelledby="tab1">
+      <textarea placeholder="Escreva suas ideias aqui..."></textarea>
+    </section>
+    <section id="tabContent2" class="tab-content" role="tabpanel" aria-labelledby="tab2" hidden>
+      <textarea placeholder="Registre seu diário..."></textarea>
+    </section>
+    <section id="tabContent3" class="tab-content" role="tabpanel" aria-labelledby="tab3" hidden>
+      <textarea placeholder="Outras anotações..."></textarea>
+    </section>
+  </div>
+
+  <script>
+    function rollD12() {
+      return Math.floor(Math.random() * 12) + 1;
+    }
+
+    const dadoEsperanca = document.getElementById('esperanca');
+    const dadoMedo = document.getElementById('medo');
+    const resultadoTexto = document.getElementById('resultado-narrativo');
+    const somaTexto = document.getElementById('soma-total');
+    const historyList = document.getElementById('historyList');
+    const historicoRolagens = [];
+
+    function atualizarHistorico() {
+      historyList.innerHTML = '';
+      for (let i = historicoRolagens.length - 1; i >= 0; i--) {
+        const li = document.createElement('li');
+        li.textContent = historicoRolagens[i];
+        historyList.appendChild(li);
+      }
+    }
+
+    function rodarDado(dado, valor) {
+      return new Promise(resolve => {
+        dado.classList.add('rolling');
+        dado.textContent = '...';
+        setTimeout(() => {
+          dado.textContent = valor;
+          dado.classList.remove('rolling');
+          resolve();
+        }, 600);
+      });
+    }
+
+    async function rollDice() {
+      dadoEsperanca.classList.remove('gold');
+      dadoMedo.classList.remove('gold');
+      resultadoTexto.style.color = '#2ecc71';
+
+      const valorEsperanca = rollD12();
+      await rodarDado(dadoEsperanca, valorEsperanca);
+
+      await new Promise(r => setTimeout(r, 1000));
+
+      const valorMedo = rollD12();
+      await rodarDado(dadoMedo, valorMedo);
+
+      const soma = valorEsperanca + valorMedo;
+      somaTexto.textContent = `Soma: ${soma}`;
+
+      const sucesso = valorEsperanca >= 10 || valorMedo >= 10;
+      const dominante = (valorEsperanca > valorMedo) ? 'esperanca' :
+                        (valorMedo > valorEsperanca) ? 'medo' :
+                        (Math.random() < 0.5 ? 'esperanca' : 'medo');
+
+      if (valorEsperanca === 12 && valorMedo === 12) {
+        resultadoTexto.innerHTML = '✨ SUCESSO CRÍTICO! ✨';
+        dadoEsperanca.classList.add('gold');
+        dadoMedo.classList.add('gold');
+      } else if (valorEsperanca === 1 && valorMedo === 1) {
+        resultadoTexto.innerHTML = '💀 FALHA CRÍTICA! 💀';
+      } else if (sucesso) {
+        resultadoTexto.innerHTML = dominante === 'esperanca'
+          ? 'Sucesso guiado pela esperança 🌟'
+          : 'Sucesso guiado pelo medo 🕯️';
+      } else {
+        resultadoTexto.innerHTML = 'Fracasso. Não foi dessa vez.';
+      }
+
+      const hora = new Date().toLocaleTimeString();
+      historicoRolagens.push(`[${hora}] Esperança: ${valorEsperanca}, Medo: ${valorMedo}, Soma: ${soma}`);
+      atualizarHistorico();
+    }
+
+    // Modal: notas
+    const notesIcon = document.getElementById('notesIcon');
+    const notesModal = document.getElementById('notesModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeBtn = notesModal.querySelector('.closeBtn');
+    const tabs = notesModal.querySelectorAll('.tabs button');
+    const contents = notesModal.querySelectorAll('.tab-content');
+
+    notesIcon.onclick = () => {
+      notesModal.classList.add('open');
+      modalOverlay.classList.add('active');
+    };
+
+    closeBtn.onclick = () => {
+      notesModal.classList.remove('open');
+      modalOverlay.classList.remove('active');
+    };
+
+    modalOverlay.onclick = closeBtn.onclick;
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        contents.forEach(c => c.hidden = true);
+        const content = document.getElementById(tab.getAttribute('aria-controls'));
+        content.hidden = false;
+      });
+    });
+  </script>
+</body>
+</html>
