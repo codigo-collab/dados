@@ -152,6 +152,12 @@
       color: #3e2e00;
     }
 
+    .hex-dice.orange {
+      background: linear-gradient(145deg, #ff9a3d, #ff6a00);
+      color: #3e2e00;
+      box-shadow: 0 0 10px rgba(255, 106, 0, 0.8);
+    }
+
     #historySidebar {
       background: #222;
       color: white;
@@ -185,16 +191,14 @@
       animation: rotateJump 0.6s ease;
     }
 
-    /* Ícone flutuante para anotações */
-    #notesIcon {
+    /* Ícones flutuantes */
+    .float-icon {
       position: fixed;
       bottom: 30px;
-      right: 30px;
-      background: #2ecc71;
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(46,204,113,0.7);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -202,17 +206,205 @@
       transition: background 0.3s, transform 0.2s;
       z-index: 9999;
     }
-
+    
+    #diceIcon {
+      right: 110px;
+      background: #ff6a00;
+    }
+    
+    #diceIcon:hover {
+      background: #e55d00;
+      transform: scale(1.1);
+    }
+    
+    #notesIcon {
+      right: 30px;
+      background: #2ecc71;
+    }
+    
     #notesIcon:hover {
       background: #27ae60;
       transform: scale(1.1);
     }
-
-    #notesIcon svg {
+    
+    .float-icon svg {
       fill: white;
       width: 28px;
       height: 28px;
       pointer-events: none;
+    }
+
+    /* Modal de dados comuns */
+    #diceModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #1e1e1e;
+      width: 90vw;
+      max-width: 500px;
+      height: 450px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      z-index: 10000;
+      transition: transform 0.3s ease;
+    }
+    
+    #diceModal.open {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    #diceModal header {
+      padding: 15px 20px;
+      background: #ff6a00;
+      border-radius: 15px 15px 0 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #111;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    #diceModal header button.closeDice {
+      background: transparent;
+      border: none;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #111;
+      line-height: 1;
+      padding: 0 5px;
+      transition: color 0.2s;
+    }
+    
+    #diceModal header button.closeDice:hover {
+      color: #8c3d00;
+    }
+    
+    .dice-tabs {
+      display: flex;
+      background: #222;
+      border-bottom: 2px solid #ff6a00;
+    }
+    
+    .dice-tabs button {
+      flex: 1;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      color: #bbb;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .dice-tabs button:hover {
+      color: #ff6a00;
+      background: #1a1a1a;
+    }
+    
+    .dice-tabs button.active {
+      color: #ff6a00;
+      border-bottom: 3px solid #ff6a00;
+      background: #151515;
+      font-weight: 700;
+    }
+    
+    .dice-tab-content {
+      flex: 1;
+      padding: 15px 20px;
+      overflow-y: auto;
+    }
+    
+    .dice-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .dice-control-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dice-control-group label {
+      margin-bottom: 5px;
+      color: #ff6a00;
+    }
+    
+    .dice-control-group select,
+    .dice-control-group input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #2c2c2c;
+      color: white;
+      font-size: 16px;
+    }
+    
+    #rollAll {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    #rollAll:hover {
+      background: #e55d00;
+    }
+    
+    #diceResults {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      min-height: 120px;
+    }
+    
+    .dado-roll {
+      width: 60px;
+      height: 52px;
+      background: linear-gradient(145deg, #ff9a3d, #ff6a00);
+      clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 8px rgba(255, 106, 0, 0.8);
+    }
+    
+    .dice-history {
+      padding: 10px;
+    }
+    
+    .dice-history ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .dice-history li {
+      padding: 8px 0;
+      border-bottom: 1px solid #444;
+    }
+    
+    .dice-history li:last-child {
+      border-bottom: none;
     }
 
     /* Modal das Anotações */
@@ -352,6 +544,18 @@
     #historySidebar::-webkit-scrollbar-thumb {
       background: #2ecc71;
     }
+    
+    .dice-tab-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .dice-tab-content::-webkit-scrollbar-track {
+      background: #1e1e1e;
+    }
+    
+    .dice-tab-content::-webkit-scrollbar-thumb {
+      background: #ff6a00;
+    }
   </style>
 </head>
 <body>
@@ -420,9 +624,57 @@
     </div>
   </div>
 
-  <!-- Ícone flutuante de anotações -->
-  <div id="notesIcon" title="Abrir Anotações">
+  <!-- Ícones flutuantes -->
+  <div id="diceIcon" class="float-icon" title="Rolagem de Dados">
+    <svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 2a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm10 10a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm0-10a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm-10 10a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm5-5a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2z"/></svg>
+  </div>
+  
+  <div id="notesIcon" class="float-icon" title="Abrir Anotações">
     <svg viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16l4-4h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6zM5 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9H9l-4 4V4z"/></svg>
+  </div>
+
+  <!-- Modal de dados comuns -->
+  <div id="diceModal" role="dialog" aria-modal="true" aria-labelledby="diceModalTitle">
+    <header>
+      <div id="diceModalTitle">Rolagem de Dados</div>
+      <button class="closeDice" aria-label="Fechar">&times;</button>
+    </header>
+
+    <nav class="dice-tabs" role="tablist" aria-label="Abas de Dados">
+      <button role="tab" id="diceTab1" aria-controls="diceTabContent1" aria-selected="true" class="active">Rolagem</button>
+      <button role="tab" id="diceTab2" aria-controls="diceTabContent2" aria-selected="false">Histórico</button>
+    </nav>
+
+    <section id="diceTabContent1" class="dice-tab-content" role="tabpanel" aria-labelledby="diceTab1">
+      <div class="dice-controls">
+        <div class="dice-control-group">
+          <label for="diceType">Tipo de Dado</label>
+          <select id="diceType">
+            <option value="4">d4</option>
+            <option value="6">d6</option>
+            <option value="8">d8</option>
+            <option value="10">d10</option>
+            <option value="12" selected>d12</option>
+          </select>
+        </div>
+        <div class="dice-control-group">
+          <label for="diceQty">Quantidade</label>
+          <input type="number" id="diceQty" min="1" max="10" value="1">
+        </div>
+      </div>
+      
+      <button id="rollAll">Rolar Dados</button>
+      
+      <div id="diceResults">
+        <!-- Resultados dos dados aparecerão aqui -->
+      </div>
+    </section>
+    
+    <section id="diceTabContent2" class="dice-tab-content" role="tabpanel" aria-labelledby="diceTab2" hidden>
+      <div class="dice-history">
+        <ul id="diceHistoryList"></ul>
+      </div>
+    </section>
   </div>
 
   <!-- Modal de anotações -->
@@ -434,10 +686,10 @@
     </header>
 
     <nav class="tabs" role="tablist" aria-label="Abas de Anotações">
+      <button role="tab" id="tab1" aria-controls="tabContent1" aria-selected="true" class="active">Ideias</button>
       <button role="tab" id="tab2" aria-controls="tabContent2" aria-selected="false">Diário</button>
-            <button role="tab" id="tab2" aria-controls="tabContent2" aria-selected="false">inventario</button>
-
-      <button role="tab" id="tab3" aria-controls="tabContent3" aria-selected="false">historia do jogador</button>
+      <button role="tab" id="tab3" aria-controls="tabContent3" aria-selected="false">Inventário</button>
+      <button role="tab" id="tab4" aria-controls="tabContent4" aria-selected="false">História do Jogador</button>
     </nav>
 
     <section id="tabContent1" class="tab-content" role="tabpanel" aria-labelledby="tab1">
@@ -447,11 +699,15 @@
       <textarea placeholder="Registre seu diário..."></textarea>
     </section>
     <section id="tabContent3" class="tab-content" role="tabpanel" aria-labelledby="tab3" hidden>
-      <textarea placeholder="Outras anotações..."></textarea>
+      <textarea placeholder="Liste seu inventário..."></textarea>
+    </section>
+    <section id="tabContent4" class="tab-content" role="tabpanel" aria-labelledby="tab4" hidden>
+      <textarea placeholder="Descreva sua história..."></textarea>
     </section>
   </div>
 
   <script>
+    // Funções para dados especiais (Esperança e Medo)
     function rollD12() {
       return Math.floor(Math.random() * 12) + 1;
     }
@@ -513,11 +769,9 @@
         resultadoTexto.innerHTML = '💀 FALHA CRÍTICA! 💀';
       } else if (sucesso) {
         resultadoTexto.innerHTML = dominante === 'esperanca'
-          ? 'Sucesso guiado pela esperança 🌟'
-          : 'Sucesso guiado pelo medo 🕯️';
-      } else {
-        resultadoTexto.innerHTML = 'Fracasso. Não foi dessa vez.';
-      }
+          ? 'Esperança🔵 '
+          : 'Medo🟣';
+     } 
 
       const hora = new Date().toLocaleTimeString();
       historicoRolagens.push(`[${hora}] Esperança: ${valorEsperanca}, Medo: ${valorMedo}, Soma: ${soma}`);
@@ -542,8 +796,95 @@
       modalOverlay.classList.remove('active');
     };
 
-    modalOverlay.onclick = closeBtn.onclick;
+    // Modal: dados comuns
+    const diceIcon = document.getElementById('diceIcon');
+    const diceModal = document.getElementById('diceModal');
+    const diceClose = diceModal.querySelector('.closeDice');
+    const diceTabs = diceModal.querySelectorAll('.dice-tabs button');
+    const diceContents = diceModal.querySelectorAll('.dice-tab-content');
+    const diceType = document.getElementById('diceType');
+    const diceQty = document.getElementById('diceQty');
+    const rollAllBtn = document.getElementById('rollAll');
+    const diceResultArea = document.getElementById('diceResults');
+    const diceHistoryList = document.getElementById('diceHistoryList');
+    const diceHistory = [];
 
+    diceIcon.onclick = () => {
+      diceModal.classList.add('open');
+      modalOverlay.classList.add('active');
+    };
+
+    diceClose.onclick = () => {
+      diceModal.classList.remove('open');
+      modalOverlay.classList.remove('active');
+    };
+
+    // Rolagem de dados comuns
+    rollAllBtn.onclick = async () => {
+      const tipo = parseInt(diceType.value);
+      const qtd = parseInt(diceQty.value);
+      diceResultArea.innerHTML = '';
+      let total = 0;
+      const rolls = [];
+
+      for (let i = 0; i < qtd; i++) {
+        const val = Math.floor(Math.random() * tipo) + 1;
+        total += val;
+        rolls.push(val);
+        
+        const span = document.createElement('div');
+        span.className = 'dado-roll';
+        span.textContent = '🎲';
+        diceResultArea.appendChild(span);
+
+        await new Promise(r => setTimeout(r, 300));
+        span.textContent = val;
+      }
+
+      if (qtd > 1) {
+        const totalSpan = document.createElement('div');
+        totalSpan.style.width = '100%';
+        totalSpan.style.textAlign = 'center';
+        totalSpan.style.marginTop = '15px';
+        totalSpan.style.fontSize = '18px';
+        totalSpan.style.fontWeight = 'bold';
+        totalSpan.innerHTML = `Soma: ${total}`;
+        diceResultArea.appendChild(totalSpan);
+      }
+
+      // Adicionar ao histórico
+      const hora = new Date().toLocaleTimeString();
+      const diceTypeText = `d${tipo}`;
+      const rollText = rolls.join(' + ');
+      const historyEntry = `[${hora}] ${qtd}${diceTypeText}: ${rollText} = ${total}`;
+      diceHistory.unshift(historyEntry);
+      
+      // Atualizar histórico
+      diceHistoryList.innerHTML = '';
+      diceHistory.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        diceHistoryList.appendChild(li);
+      });
+    };
+
+    // Abas para dados comuns
+    diceTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        diceTabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        diceContents.forEach(c => c.hidden = true);
+        const content = document.getElementById(tab.getAttribute('aria-controls'));
+        if (content) content.hidden = false;
+      });
+    });
+
+    // Abas para anotações
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         tabs.forEach(t => {
@@ -555,9 +896,16 @@
 
         contents.forEach(c => c.hidden = true);
         const content = document.getElementById(tab.getAttribute('aria-controls'));
-        content.hidden = false;
+        if (content) content.hidden = false;
       });
     });
+
+    // Fechar modais ao clicar fora
+    modalOverlay.onclick = () => {
+      notesModal.classList.remove('open');
+      diceModal.classList.remove('open');
+      modalOverlay.classList.remove('active');
+    };
   </script>
 </body>
 </html>
