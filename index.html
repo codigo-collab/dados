@@ -1138,54 +1138,82 @@
       modalOverlay.classList.remove('active');
     };
   </script>
-<!-- Substitua o botão de salvar existente por este: -->
-<button id="saveBtn" style="display: block; margin: 20px auto; padding: 12px 30px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+  <button id="saveBtn" style="display: block; margin: 20px auto; padding: 12px 30px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
   💾 Baixar Ficha HTML
 </button>
 
 <script>
-  // Substitua o código de salvamento existente por este:
   document.getElementById('saveBtn').addEventListener('click', function() {
-    // Criar um clone do documento atual
+    // Primeiro, atualizamos todos os valores nos elementos clonados
+    const container = document.querySelector('.container');
+    const containerClone = container.cloneNode(true);
+    
+    // Atualizar valores dos inputs no clone
+    const inputs = container.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+      const cloneInput = containerClone.querySelector(`#${input.id}`) || 
+                        containerClone.querySelector(`[name="${input.name}"]`) ||
+                        containerClone.querySelector(`[placeholder="${input.placeholder}"]`);
+      if (cloneInput) {
+        cloneInput.value = input.value;
+        // Para checkboxes
+        if (input.type === 'checkbox') {
+          cloneInput.checked = input.checked;
+        }
+      }
+    });
+    
+    // Remover elementos que não queremos no download
+    const elementsToRemove = ['#diceIcon', '#notesIcon', '#diceModal', '#notesModal', '#modalOverlay', '#saveBtn'];
+    elementsToRemove.forEach(selector => {
+      const el = containerClone.querySelector(selector);
+      if (el) el.remove();
+    });
+    
+    // Obter o nome do personagem para o nome do arquivo
+    const charName = document.querySelector('input[placeholder="Nome do personagem"]').value || 'personagem';
+    const fileName = `ficha_${charName.replace(/\s+/g, '_').toLowerCase()}.html`;
+    
+    // Criar o conteúdo HTML completo
     const htmlContent = `<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ficha de Personagem - ${document.querySelector('input[placeholder="Nome do personagem"]').value || 'Sem Nome'}</title>
+  <title>Ficha de ${charName}</title>
   <style>
     ${document.querySelector('style').innerHTML}
   </style>
 </head>
 <body>
-  ${document.querySelector('.container').outerHTML}
+  ${containerClone.outerHTML}
 </body>
 </html>`;
-
-    // Criar blob com o conteúdo HTML
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
     
-    // Criar link para download
+    // Criar e disparar o download
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ficha_${document.querySelector('input[placeholder="Nome do personagem"]').value || 'personagem'}.html`;
+    a.download = fileName;
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
     
-    // Limpar
+    // Limpeza
     setTimeout(() => {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 100);
     
     // Feedback visual
-    this.textContent = '✔️ Ficha Baixada!';
+    const originalText = this.innerHTML;
+    this.innerHTML = '✓ Ficha Baixada!';
     setTimeout(() => {
-      this.textContent = '💾 Baixar Ficha HTML';
+      this.innerHTML = originalText;
     }, 2000);
   });
 </script>
-</script>
+  
 </body>
 </html>
