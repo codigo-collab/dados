@@ -790,87 +790,7 @@
   
   
   
- <script>
-    // Função para salvar todos os dados nos atributos HTML
-    function saveToHtmlAttributes() {
-      // Salvar valores de todos os campos de texto/número
-      document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
-        input.setAttribute('value', input.value);
-      });
-      
-      // Salvar estado dos checkboxes
-      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.checked) {
-          checkbox.setAttribute('checked', 'checked');
-        } else {
-          checkbox.removeAttribute('checked');
-        }
-      });
-      
-      // Salvar conteúdo das textareas (especialmente nas abas)
-      document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.textContent = textarea.value;
-      });
-    }
-
-    // Função para salvar no localStorage (para uso na mesma sessão)
-    function saveToLocalStorage() {
-      const formData = {
-        // [Seu código existente de coleta de dados]
-      };
-      localStorage.setItem('daggerheartCharacterSheet', JSON.stringify(formData));
-    }
-
-    // Função combinada de salvamento
-    function saveAllData() {
-      saveToHtmlAttributes();
-      saveToLocalStorage();
-    }
-
-    // Configurar eventos de salvamento
-    document.querySelectorAll('input, textarea').forEach(element => {
-      element.addEventListener('input', saveAllData);
-    });
-
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', saveAllData);
-    });
-
-    // Carregar dados quando a página é aberta
-    window.addEventListener('load', function() {
-      // Primeiro carregar do localStorage
-      const savedData = localStorage.getItem('daggerheartCharacterSheet');
-      if (savedData) {
-        const formData = JSON.parse(savedData);
-        // [Seu código existente de carregamento de dados]
-      }
-      
-      // Depois garantir que os atributos HTML estão sincronizados
-      document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
-        if (input.hasAttribute('value')) {
-          input.value = input.getAttribute('value');
-        }
-      });
-      
-      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = checkbox.hasAttribute('checked');
-      });
-      
-      // Garantir que as textareas estão sincronizadas
-      document.querySelectorAll('textarea').forEach(textarea => {
-        if (textarea.textContent) {
-          textarea.value = textarea.textContent;
-        }
-      });
-    });
-
-    // [O resto do seu JavaScript permanece igual]
-
-//------------------------------------------------//
-//////----------------------------------------------//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
   </script>
   <div class="container">
     <h1>Ficha de Personagem Daggerheart</h1>
@@ -1218,5 +1138,54 @@
       modalOverlay.classList.remove('active');
     };
   </script>
+<!-- Substitua o botão de salvar existente por este: -->
+<button id="saveBtn" style="display: block; margin: 20px auto; padding: 12px 30px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+  💾 Baixar Ficha HTML
+</button>
+
+<script>
+  // Substitua o código de salvamento existente por este:
+  document.getElementById('saveBtn').addEventListener('click', function() {
+    // Criar um clone do documento atual
+    const htmlContent = `<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ficha de Personagem - ${document.querySelector('input[placeholder="Nome do personagem"]').value || 'Sem Nome'}</title>
+  <style>
+    ${document.querySelector('style').innerHTML}
+  </style>
+</head>
+<body>
+  ${document.querySelector('.container').outerHTML}
+</body>
+</html>`;
+
+    // Criar blob com o conteúdo HTML
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Criar link para download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ficha_${document.querySelector('input[placeholder="Nome do personagem"]').value || 'personagem'}.html`;
+    document.body.appendChild(a);
+    a.click();
+    
+    // Limpar
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    
+    // Feedback visual
+    this.textContent = '✔️ Ficha Baixada!';
+    setTimeout(() => {
+      this.textContent = '💾 Baixar Ficha HTML';
+    }, 2000);
+  });
+</script>
+</script>
 </body>
 </html>
