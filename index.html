@@ -793,50 +793,8 @@
  
   </script>
   <div class="container">
-    <h1>Ficha de Personagem Daggerheart</h1>
+    <h1>Daggerhaert</h1>
 
-    <div class="section">
-      <h2>Informações Gerais</h2>
-      <label>Nome</label><input type="text" placeholder="Nome do personagem">
-      <label>Nível de classe</label><input type="text" min="1" placeholder="Nível">
-    </div>
-
-    <div class="section">
-      <h2>Atributos</h2>
-      <div class="atributos-grid">
-        <input type="text" value="0">
-        <input type="text" value="0">
-        <input type="text" value="0">
-        <input type="text" value="0">
-        <input type="text" value="0">
-        <input type="text" value="0">
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>status</h2>
-      <label>Pontos de Vida (HP)</label><input type="text" placeholder="HP">
-      <label>Armadura</label><input type="text" placeholder="Armadura">
-      <label>Evasao</label><input type="text" placeholder="Evasao">
-      <label>Estresse</label><input type="text" placeholder="Estresse">
-    </div>
-
-    <div class="section">
-      <h2>Experiências & Recursos de Classe</h2>
-      <label>Experiências</label><textarea rows="2" placeholder="Experiências adquiridas..."></textarea>
-      <label>Recursos de Classe</label><textarea rows="2" placeholder="Recursos especiais..."></textarea>
-    </div>
-
-    <div class="section">
-      <h2>Fortuna</h2>
-      <div class="checkbox-group">
-        <label><input type="checkbox"> PUNHADO</label>
-        <label><input type="checkbox"> BOLSAS</label>
-        <label><input type="checkbox"> BAÚS</label>
-        <label><input type="checkbox"> TESOURO</label>
-        <label><input type="checkbox"> FORTUNA</label>
-      </div>
-    </div>
 
     <button id="rollBtn" onclick="rollDice()">🎲 Rolar Esperança e Medo 🎲</button>
 
@@ -1138,82 +1096,7 @@
       modalOverlay.classList.remove('active');
     };
   </script>
-  <button id="saveBtn" style="display: block; margin: 20px auto; padding: 12px 30px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-  💾 Baixar Ficha HTML
-</button>
-
-<script>
-  document.getElementById('saveBtn').addEventListener('click', function() {
-    // Primeiro, atualizamos todos os valores nos elementos clonados
-    const container = document.querySelector('.container');
-    const containerClone = container.cloneNode(true);
-    
-    // Atualizar valores dos inputs no clone
-    const inputs = container.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-      const cloneInput = containerClone.querySelector(`#${input.id}`) || 
-                        containerClone.querySelector(`[name="${input.name}"]`) ||
-                        containerClone.querySelector(`[placeholder="${input.placeholder}"]`);
-      if (cloneInput) {
-        cloneInput.value = input.value;
-        // Para checkboxes
-        if (input.type === 'checkbox') {
-          cloneInput.checked = input.checked;
-        }
-      }
-    });
-    
-    // Remover elementos que não queremos no download
-    const elementsToRemove = ['#diceIcon', '#notesIcon', '#diceModal', '#notesModal', '#modalOverlay', '#saveBtn'];
-    elementsToRemove.forEach(selector => {
-      const el = containerClone.querySelector(selector);
-      if (el) el.remove();
-    });
-    
-    // Obter o nome do personagem para o nome do arquivo
-    const charName = document.querySelector('input[placeholder="Nome do personagem"]').value || 'personagem';
-    const fileName = `ficha_${charName.replace(/\s+/g, '_').toLowerCase()}.html`;
-    
-    // Criar o conteúdo HTML completo
-    const htmlContent = `<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ficha de ${charName}</title>
-  <style>
-    ${document.querySelector('style').innerHTML}
-  </style>
-</head>
-<body>
-  ${containerClone.outerHTML}
-</body>
-</html>`;
-    
-    // Criar e disparar o download
-    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    
-    // Limpeza
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 100);
-    
-    // Feedback visual
-    const originalText = this.innerHTML;
-    this.innerHTML = '✓ Ficha Baixada!';
-    setTimeout(() => {
-      this.innerHTML = originalText;
-    }, 2000);
-  });
-</script>
+  
   
 </body>
 </html>
