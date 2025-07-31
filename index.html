@@ -785,58 +785,92 @@
 </head>
 <body>
   
-  <script>
-    // Função para salvar dados nos próprios elementos HTML
-    function saveToElements() {
-      // Todos os campos já estão salvos diretamente nos elementos HTML
-      // (value para inputs/textareas, checked para checkboxes)
-      // Isso é automaticamente preservado quando a página é salva
-    }
-
-    // Função para carregar dados (opcional, para quando a página é aberta no mesmo navegador)
-    function loadFromLocalStorage() {
-      const savedData = localStorage.getItem('daggerheartCharacterSheet');
-      if (savedData) {
-        const formData = JSON.parse(savedData);
-        
-        // Preencher os campos (igual à função anterior)
-        document.querySelector('input[type="text"]').value = formData.nome || '';
-        // [...] (restante do código de carregamento)
-      }
-    }
-
-    // Salvar automaticamente quando os campos são alterados
-    document.querySelectorAll('input, textarea').forEach(element => {
-      element.addEventListener('input', function() {
-        // Para campos de texto/número, o value já é automaticamente salvo no HTML
-        // Para checkboxes, precisamos garantir que o estado checked seja mantido
-        if (this.type === 'checkbox') {
-          this.setAttribute('checked', this.checked);
-        } else {
-          this.setAttribute('value', this.value);
-        }
-        
-        // Também salvamos no localStorage para uso na mesma sessão
-        saveFormData();
+  
+  
+  
+  
+  
+ <script>
+    // Função para salvar todos os dados nos atributos HTML
+    function saveToHtmlAttributes() {
+      // Salvar valores de todos os campos de texto/número
+      document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+        input.setAttribute('value', input.value);
       });
+      
+      // Salvar estado dos checkboxes
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.checked) {
+          checkbox.setAttribute('checked', 'checked');
+        } else {
+          checkbox.removeAttribute('checked');
+        }
+      });
+      
+      // Salvar conteúdo das textareas (especialmente nas abas)
+      document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.textContent = textarea.value;
+      });
+    }
+
+    // Função para salvar no localStorage (para uso na mesma sessão)
+    function saveToLocalStorage() {
+      const formData = {
+        // [Seu código existente de coleta de dados]
+      };
+      localStorage.setItem('daggerheartCharacterSheet', JSON.stringify(formData));
+    }
+
+    // Função combinada de salvamento
+    function saveAllData() {
+      saveToHtmlAttributes();
+      saveToLocalStorage();
+    }
+
+    // Configurar eventos de salvamento
+    document.querySelectorAll('input, textarea').forEach(element => {
+      element.addEventListener('input', saveAllData);
+    });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', saveAllData);
     });
 
     // Carregar dados quando a página é aberta
     window.addEventListener('load', function() {
-      // Primeiro tentamos carregar do localStorage (para a mesma sessão)
-      loadFromLocalStorage();
+      // Primeiro carregar do localStorage
+      const savedData = localStorage.getItem('daggerheartCharacterSheet');
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        // [Seu código existente de carregamento de dados]
+      }
       
-      // Depois garantimos que todos os valores estão salvos nos atributos HTML
-      document.querySelectorAll('input, textarea').forEach(element => {
-        if (element.type === 'checkbox') {
-          element.setAttribute('checked', element.checked);
-        } else {
-          element.setAttribute('value', element.value);
+      // Depois garantir que os atributos HTML estão sincronizados
+      document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+        if (input.hasAttribute('value')) {
+          input.value = input.getAttribute('value');
+        }
+      });
+      
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = checkbox.hasAttribute('checked');
+      });
+      
+      // Garantir que as textareas estão sincronizadas
+      document.querySelectorAll('textarea').forEach(textarea => {
+        if (textarea.textContent) {
+          textarea.value = textarea.textContent;
         }
       });
     });
 
     // [O resto do seu JavaScript permanece igual]
+
+//------------------------------------------------//
+//////----------------------------------------------//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   </script>
   <div class="container">
     <h1>Ficha de Personagem Daggerheart</h1>
@@ -844,8 +878,7 @@
     <div class="section">
       <h2>Informações Gerais</h2>
       <label>Nome</label><input type="text" placeholder="Nome do personagem">
-      <label>Pronomes</label><input type="text" placeholder="Pronomes">
-      <label>Nível de classe</label><input type="number" min="1" placeholder="Nível">
+      <label>Nível de classe</label><input type="text" min="1" placeholder="Nível">
     </div>
 
     <div class="section">
@@ -862,10 +895,10 @@
 
     <div class="section">
       <h2>status</h2>
-      <label>Pontos de Vida (HP)</label><input type="number" placeholder="HP">
-      <label>Armadura</label><input type="number" placeholder="Armadura">
-      <label>Evasao</label><input type="number" placeholder="Evasao">
-      <label>Estresse</label><input type="number" placeholder="Estresse">
+      <label>Pontos de Vida (HP)</label><input type="text" placeholder="HP">
+      <label>Armadura</label><input type="text" placeholder="Armadura">
+      <label>Evasao</label><input type="text" placeholder="Evasao">
+      <label>Estresse</label><input type="text" placeholder="Estresse">
     </div>
 
     <div class="section">
