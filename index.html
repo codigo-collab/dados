@@ -784,6 +784,118 @@
   </style>
 </head>
 <body>
+    <script>
+    // Função para salvar todos os dados do formulário
+    function saveFormData() {
+      const formData = {
+        // Informações Gerais
+        nome: document.querySelector('input[type="text"]').value,
+        pronomes: document.querySelectorAll('input[type="text"]')[1].value,
+        nivel: document.querySelector('input[type="number"]').value,
+        
+        // Atributos
+        atributos: Array.from(document.querySelectorAll('.atributos-grid input')).map(input => input.value),
+        
+        // Status
+        hp: document.querySelectorAll('input[type="number"]')[1].value,
+        armadura: document.querySelectorAll('input[type="number"]')[2].value,
+        evasao: document.querySelectorAll('input[type="number"]')[3].value,
+        estresse: document.querySelectorAll('input[type="number"]')[4].value,
+        
+        // Experiências & Recursos
+        experiencias: document.querySelectorAll('textarea')[0].value,
+        recursos: document.querySelectorAll('textarea')[1].value,
+        
+        // Fortuna
+        fortuna: Array.from(document.querySelectorAll('.checkbox-group input')).map(checkbox => checkbox.checked),
+        
+        // Anotações
+        ideias: document.querySelectorAll('.tab-content textarea')[0].value,
+        diario: document.querySelectorAll('.tab-content textarea')[1].value,
+        inventario: document.querySelectorAll('.tab-content textarea')[2].value,
+        historia: document.querySelectorAll('.tab-content textarea')[3].value,
+        
+        // Histórico
+        historicoRolagens: historicoRolagens,
+        diceHistory: diceHistory
+      };
+      
+      localStorage.setItem('daggerheartCharacterSheet', JSON.stringify(formData));
+    }
+
+    // Função para carregar os dados salvos
+    function loadFormData() {
+      const savedData = localStorage.getItem('daggerheartCharacterSheet');
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        
+        // Informações Gerais
+        document.querySelector('input[type="text"]').value = formData.nome || '';
+        document.querySelectorAll('input[type="text"]')[1].value = formData.pronomes || '';
+        document.querySelector('input[type="number"]').value = formData.nivel || '';
+        
+        // Atributos
+        const atributosInputs = document.querySelectorAll('.atributos-grid input');
+        formData.atributos.forEach((value, index) => {
+          if (atributosInputs[index]) atributosInputs[index].value = value || '0';
+        });
+        
+        // Status
+        document.querySelectorAll('input[type="number"]')[1].value = formData.hp || '';
+        document.querySelectorAll('input[type="number"]')[2].value = formData.armadura || '';
+        document.querySelectorAll('input[type="number"]')[3].value = formData.evasao || '';
+        document.querySelectorAll('input[type="number"]')[4].value = formData.estresse || '';
+        
+        // Experiências & Recursos
+        document.querySelectorAll('textarea')[0].value = formData.experiencias || '';
+        document.querySelectorAll('textarea')[1].value = formData.recursos || '';
+        
+        // Fortuna
+        const fortunaCheckboxes = document.querySelectorAll('.checkbox-group input');
+        formData.fortuna.forEach((checked, index) => {
+          if (fortunaCheckboxes[index]) fortunaCheckboxes[index].checked = checked;
+        });
+        
+        // Anotações
+        document.querySelectorAll('.tab-content textarea')[0].value = formData.ideias || '';
+        document.querySelectorAll('.tab-content textarea')[1].value = formData.diario || '';
+        document.querySelectorAll('.tab-content textarea')[2].value = formData.inventario || '';
+        document.querySelectorAll('.tab-content textarea')[3].value = formData.historia || '';
+        
+        // Histórico
+        if (formData.historicoRolagens) {
+          historicoRolagens = formData.historicoRolagens;
+          atualizarHistorico();
+        }
+        
+        if (formData.diceHistory) {
+          diceHistory = formData.diceHistory;
+          // Atualizar histórico de dados
+          diceHistoryList.innerHTML = '';
+          diceHistory.forEach(entry => {
+            const li = document.createElement('li');
+            li.textContent = entry;
+            diceHistoryList.appendChild(li);
+          });
+        }
+      }
+    }
+
+    // Salvar dados quando qualquer campo é alterado
+    document.querySelectorAll('input, textarea').forEach(element => {
+      element.addEventListener('input', saveFormData);
+    });
+
+    document.querySelectorAll('.checkbox-group input').forEach(checkbox => {
+      checkbox.addEventListener('change', saveFormData);
+    });
+
+    // Carregar dados quando a página é aberta
+    window.addEventListener('load', loadFormData);
+
+    // [O resto do seu JavaScript existente permanece exatamente o mesmo]
+  </script>
+
   <div class="container">
     <h1>Ficha de Personagem Daggerheart</h1>
 
